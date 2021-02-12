@@ -19,7 +19,7 @@ class ProductItem extends HTMLElement {
     this.attachShadow({mode: 'open'});
 
     // If all attributes are filled out, generate html
-    if (this.hasAttribute('img') && this.hasAttribute('title') && this.hasAttribute('price')) {
+    if (this.hasAttribute('img') && this.hasAttribute('title') && this.hasAttribute('price') && this.hasAttribute('id')) {
       this.construct();
     }
   }
@@ -49,24 +49,18 @@ class ProductItem extends HTMLElement {
       price.textContent = '$' + this.getAttribute('price');
       
       // <button onclick="alert('Added to Cart!')">Add to Cart</button>
-      const toCart = product.appendChild(document.createElement('button'));
-      toCart.setAttribute('onclick', "alert('Added to Cart!')");
-      toCart.textContent = 'Add to Cart';
+      const cartButton = product.appendChild(document.createElement('button'));
+      cartButton.setAttribute('onclick', "alert('Added to Cart!')");
+      const id = this.getAttribute('id');
+
+      // check if is already added to cart or not
+      cartCheck(cartButton, id);
 
       // Part 5) Increment and decrement cart contents/add and remove items from cart
-      toCart.addEventListener('click', function () {
-        let cartCount = document.getElementById('cart-count');
-
-        if (toCart.textContent === 'Add to Cart') {
-          cartCount.innerHTML = parseInt(cartCount.innerHTML) + 1;
-
-          toCart.textContent = 'Remove from Cart';
-        
-        } else {
-          cartCount.innerHTML = parseInt(cartCount.innerHTML) - 1;
-          toCart.textContent = 'Add to Cart';
-        }
-
+      cartButton.addEventListener('click', function () {
+        if (cartButton.textContent === 'Add to Cart')
+              { addToCart(cartButton, id); }
+        else  { removeFromCart(cartButton, id); }
       });
 
     // copied over css styling
@@ -146,5 +140,37 @@ class ProductItem extends HTMLElement {
   }
 
 }
+
+// Part 6) Persistent cart
+function cartCheck (button, id) {
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  if (cart[id - 1] == 1) {
+    addToCart(button, id);
+  } else {
+    button.textContent = 'Add to Cart';
+  }
+};
+
+function addToCart(button, id) {
+  let cartCount = document.getElementById('cart-count');
+  cartCount.innerHTML = parseInt(cartCount.innerHTML) + 1;
+
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  cart[id - 1] = 1;
+  window.localStorage.setItem('cart', JSON.stringify(cart));
+
+  button.textContent = 'Remove from Cart';
+};
+
+function removeFromCart(button, id) {
+  let cartCount = document.getElementById('cart-count');
+  cartCount.innerHTML = parseInt(cartCount.innerHTML) - 1;
+
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  cart[id - 1] = 0;
+  window.localStorage.setItem('cart', JSON.stringify(cart));
+
+  button.textContent = 'Add to Cart';
+};
 
 customElements.define('product-item', ProductItem);

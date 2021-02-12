@@ -15,6 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // Store and render data on initial load
         function (items) {
           window.localStorage.setItem('itemData', JSON.stringify(items));
+          window.localStorage.setItem('cart', JSON.stringify(new Array(items.length).fill(0)));
           renderData();
         }
       )
@@ -33,9 +34,9 @@ window.addEventListener('DOMContentLoaded', () => {
     for(const product of product_arr) {
       const item = document.createElement('product-item');
       
-      item.setAttribute('img',   product.image);
+      item.setAttribute(   'id', product.id);
+      item.setAttribute(  'img', product.image);
       item.setAttribute('title', product.title);
-      item.setAttribute('price', product.price);
       item.setAttribute('price', product.price.toFixed(2));
 
       item.construct();
