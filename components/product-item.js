@@ -45,13 +45,29 @@ class ProductItem extends HTMLElement {
 
       // <p class="price">item price</p>
       const price = product.appendChild(document.createElement('p'));
-      price.textContent = '$' + this.getAttribute('price');
       price.setAttribute('class', 'price');
+      price.textContent = '$' + this.getAttribute('price');
       
       // <button onclick="alert('Added to Cart!')">Add to Cart</button>
       const toCart = product.appendChild(document.createElement('button'));
       toCart.setAttribute('onclick', "alert('Added to Cart!')");
       toCart.textContent = 'Add to Cart';
+
+      // Part 5) Increment and decrement cart contents/add and remove items from cart
+      toCart.addEventListener('click', function () {
+        let cartCount = document.getElementById('cart-count');
+
+        if (toCart.textContent === 'Add to Cart') {
+          cartCount.innerHTML = parseInt(cartCount.innerHTML) + 1;
+
+          toCart.textContent = 'Remove from Cart';
+        
+        } else {
+          cartCount.innerHTML = parseInt(cartCount.innerHTML) - 1;
+          toCart.textContent = 'Add to Cart';
+        }
+
+      });
 
     // copied over css styling
     const style = document.createElement('style');
