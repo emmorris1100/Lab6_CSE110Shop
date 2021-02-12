@@ -36,6 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
       item.setAttribute('img',   product.image);
       item.setAttribute('title', product.title);
       item.setAttribute('price', product.price);
+      item.setAttribute('price', product.price.toFixed(2));
 
       item.construct();
       
